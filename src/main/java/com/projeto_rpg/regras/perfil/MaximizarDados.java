@@ -19,7 +19,7 @@ public record MaximizarDados() implements RegraDeDanoCritico {
                 .flatMap(termo -> Collections.nCopies(termo.mantidos(), termo.faces()).stream())
                 .toList();
         int total = dano.termos().stream()
-                .mapToInt(termo -> termo.mantidos() * termo.faces())
+                .mapToInt(MaximizarDados::maximoDoTermo)
                 .sum() + dano.modificador();
         return new ResultadoRolagem(dadosMaximos, total);
     }
