@@ -27,6 +27,14 @@ public class GeradorFixo implements GeradorAleatorio {
     }
 
     /**
+     * Descarta valores pendentes e o registro de faces (útil quando o gerador é um bean compartilhado).
+     */
+    public void reiniciar() {
+        valores.clear();
+        facesSolicitadas.clear();
+    }
+
+    /**
      * Indica se todos os valores enfileirados foram consumidos.
      */
     public boolean consumiuTudo() {

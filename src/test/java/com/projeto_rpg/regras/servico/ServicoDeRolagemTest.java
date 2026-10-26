@@ -7,6 +7,7 @@ import com.projeto_rpg.regras.historico.RegistroDeRolagem;
 import com.projeto_rpg.regras.historico.TipoRolagem;
 import com.projeto_rpg.regras.mecanica.ModoDeRolagem;
 import com.projeto_rpg.regras.mecanica.ResultadoTeste;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,6 +36,11 @@ class ServicoDeRolagemTest {
 
     @Autowired
     private GeradorFixo gerador;
+
+    @BeforeEach
+    void reiniciarGerador() {
+        gerador.reiniciar();
+    }
 
     @Test
     @DisplayName("deve rolar uma expressão livre e registrar no histórico")
@@ -67,7 +74,7 @@ class ServicoDeRolagemTest {
 
         assertThrows(IllegalArgumentException.class, () -> servico.rolar(null, "1d6"));
         assertThrows(IllegalArgumentException.class, () -> servico.testar(null, 0, 10, ModoDeRolagem.NORMAL));
-        assertEquals(false, gerador.consumiuTudo());
+        assertFalse(gerador.consumiuTudo());
     }
 
     @Test
