@@ -33,4 +33,39 @@ class ParserDeExpressaoTest {
 
         assertEquals(List.of(TermoDeDado.simples(1, 8)), expressao.termos());
     }
+
+    @Test
+    @DisplayName("deve somar o modificador positivo")
+    void deveInterpretarModificadorQuandoExpressaoTiverSoma() {
+        ExpressaoDeDado expressao = parser.interpretar("2d6+3");
+
+        assertEquals(List.of(TermoDeDado.simples(2, 6)), expressao.termos());
+        assertEquals(3, expressao.modificador());
+    }
+
+    @Test
+    @DisplayName("deve subtrair o modificador negativo")
+    void deveInterpretarModificadorNegativoQuandoExpressaoTiverSubtracao() {
+        ExpressaoDeDado expressao = parser.interpretar("4d6-1");
+
+        assertEquals(-1, expressao.modificador());
+    }
+
+    @Test
+    @DisplayName("deve interpretar vários grupos de dados e acumular os modificadores")
+    void deveInterpretarVariosTermosQuandoExpressaoForComposta() {
+        ExpressaoDeDado expressao = parser.interpretar("2d6+1d4+2-1");
+
+        assertEquals(List.of(TermoDeDado.simples(2, 6), TermoDeDado.simples(1, 4)), expressao.termos());
+        assertEquals(1, expressao.modificador());
+    }
+
+    @Test
+    @DisplayName("deve ignorar espaços e maiúsculas")
+    void deveIgnorarEspacosEMaiusculasQuandoExpressaoForDigitadaLivremente() {
+        ExpressaoDeDado expressao = parser.interpretar("  1D20 + 5 ");
+
+        assertEquals(List.of(TermoDeDado.simples(1, 20)), expressao.termos());
+        assertEquals(5, expressao.modificador());
+    }
 }
