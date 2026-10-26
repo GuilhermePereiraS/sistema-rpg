@@ -18,4 +18,11 @@ public record ExpressaoDeDado(List<TermoDeDado> termos, int modificador) {
         }
         termos = List.copyOf(termos);
     }
+
+    /**
+     * Mesma expressão com todos os dados dobrados e o modificador inalterado.
+     */
+    public ExpressaoDeDado comDadosDobrados() {
+        return new ExpressaoDeDado(termos.stream().map(TermoDeDado::dobrado).toList(), modificador);
+    }
 }

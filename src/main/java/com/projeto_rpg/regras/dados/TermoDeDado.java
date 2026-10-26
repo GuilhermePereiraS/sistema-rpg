@@ -38,4 +38,11 @@ public record TermoDeDado(int quantidade, int faces, Selecao selecao, int mantid
     public static TermoDeDado mantendoMenores(int quantidade, int faces, int mantidos) {
         return new TermoDeDado(quantidade, faces, Selecao.MENORES, mantidos);
     }
+
+    /**
+     * Mesmo termo com o dobro de dados rolados e mantidos (ex.: 2d6 vira 4d6).
+     */
+    public TermoDeDado dobrado() {
+        return new TermoDeDado(quantidade * 2, faces, selecao, mantidos * 2);
+    }
 }
