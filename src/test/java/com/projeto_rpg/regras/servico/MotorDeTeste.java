@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
  * (por um {@link GeradorFixo}) e o relógio (por um relógio fixo).
  */
 @TestConfiguration
-@Import({ConfiguracaoDeRegras.class, ServicoDeHistorico.class, ServicoDeRolagem.class})
+@Import({ConfiguracaoDeRegras.class, ServicoDeHistorico.class, ServicoDeRolagem.class, ServicoDeCombate.class})
 public class MotorDeTeste {
 
     public static final Instant AGORA = Instant.parse("2026-03-01T12:00:00Z");
