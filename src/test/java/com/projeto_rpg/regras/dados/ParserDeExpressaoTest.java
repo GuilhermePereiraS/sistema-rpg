@@ -107,6 +107,12 @@ class ParserDeExpressaoTest {
         assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
     }
 
+    @Test
+    @DisplayName("deve lançar exceção quando dados forem subtraídos")
+    void deveLancarExcecaoQuandoDadosForemSubtraidos() {
+        assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar("1d20-1d4"));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"0d6", "101d6", "1d1", "1d1001", "2d20kh0", "2d20kl3"})
     @DisplayName("deve lançar exceção quando quantidade, faces ou dados mantidos estiverem fora dos limites")
