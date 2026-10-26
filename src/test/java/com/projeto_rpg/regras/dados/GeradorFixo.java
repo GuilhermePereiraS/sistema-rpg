@@ -19,6 +19,20 @@ public class GeradorFixo implements GeradorAleatorio {
         this.valores = new ArrayDeque<>(Arrays.asList(valores));
     }
 
+    /**
+     * Acrescenta valores ao fim da fila.
+     */
+    public void enfileirar(Integer... novosValores) {
+        valores.addAll(Arrays.asList(novosValores));
+    }
+
+    /**
+     * Indica se todos os valores enfileirados foram consumidos.
+     */
+    public boolean consumiuTudo() {
+        return valores.isEmpty();
+    }
+
     @Override
     public int rolar(int faces) {
         if (valores.isEmpty()) {
