@@ -101,9 +101,16 @@ class ParserDeExpressaoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"abc", "2d", "d", "2d6+", "2d6++3", "+", "2d6x", "2d6kh", "5", "-3"})
+    @ValueSource(strings = {"abc", "2d", "d", "2d6+", "2d6++3", "+", "2d6x", "2d6kh", "5", "-3", "d6d6"})
     @DisplayName("deve lançar exceção quando a expressão estiver malformada ou não tiver dados")
     void deveLancarExcecaoQuandoExpressaoForMalformada(String texto) {
+        assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"99999999999d6", "1d6+99999999999"})
+    @DisplayName("deve lançar exceção quando algum número não couber em um inteiro")
+    void deveLancarExcecaoQuandoNumeroForGrandeDemais(String texto) {
         assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
     }
 

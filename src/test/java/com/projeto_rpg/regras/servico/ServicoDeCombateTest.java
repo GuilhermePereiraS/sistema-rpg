@@ -189,6 +189,18 @@ class ServicoDeCombateTest {
         }
 
         @Test
+        @DisplayName("não deve curar quando a rolagem de cura resultar em zero ou menos, mas deve registrá-la")
+        void naoDeveCurarQuandoRolagemDeCuraNaoForPositiva() {
+            servico.aplicarDano(ALVO, 10, false);
+            gerador.enfileirar(1);
+
+            EstadoDeCombate estado = servico.curarComRolagem(ALVO, "1d4-5");
+
+            assertEquals(10, estado.getPvAtual());
+            assertEquals(-4, historico.consultarPorPersonagemETipo(ALVO, TipoRolagem.CURA).getFirst().getTotal());
+        }
+
+        @Test
         @DisplayName("deve recuperar totalmente o personagem")
         void deveRecuperarTotalmente() {
             derrubarAlvo();
