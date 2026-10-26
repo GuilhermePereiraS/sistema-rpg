@@ -7,11 +7,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Converte texto em notação de dados ("2d6", "d8", "2d6+1d4-1") para {@link ExpressaoDeDado}.
+ * Converte texto em notação de dados ("2d6", "d8", "2d6+1d4-1", "4d6kh3") para {@link ExpressaoDeDado}.
  */
 public class ParserDeExpressao {
 
-    private static final Pattern TERMO = Pattern.compile("\\G([+-]?)(?:(\\d*)d(\\d+)|(\\d+))");
+    private static final Pattern TERMO =
+            Pattern.compile("\\G([+-]?)(?:(\\d*)d(\\d+)(?:k([hl])(\\d+))?|(\\d+))");
 
     public ExpressaoDeDado interpretar(String texto) {
         String normalizado = texto.replaceAll("\\s+", "").toLowerCase(Locale.ROOT);
@@ -19,13 +20,19 @@ public class ParserDeExpressao {
         List<TermoDeDado> termos = new ArrayList<>();
         int modificador = 0;
         while (matcher.find()) {
-            if (matcher.group(4) != null) {
-                int valor = Integer.parseInt(matcher.group(4));
+            if (matcher.group(6) != null) {
+                int valor = Integer.parseInt(matcher.group(6));
                 modificador += "-".equals(matcher.group(1)) ? -valor : valor;
             } else {
                 int quantidade = matcher.group(2).isEmpty() ? 1 : Integer.parseInt(matcher.group(2));
                 int faces = Integer.parseInt(matcher.group(3));
-                termos.add(TermoDeDado.simples(quantidade, faces));
+                if ("h".equals(matcher.group(4))) {
+                    termos.add(TermoDeDado.mantendoMaiores(quantidade, faces, Integer.parseInt(matcher.group(5))));
+                } else if ("l".equals(matcher.group(4))) {
+                    termos.add(TermoDeDado.mantendoMenores(quantidade, faces, Integer.parseInt(matcher.group(5))));
+                } else {
+                    termos.add(TermoDeDado.simples(quantidade, faces));
+                }
             }
         }
         return new ExpressaoDeDado(termos, modificador);
