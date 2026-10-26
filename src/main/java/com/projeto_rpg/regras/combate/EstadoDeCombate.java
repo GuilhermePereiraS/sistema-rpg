@@ -95,6 +95,10 @@ public class EstadoDeCombate {
         recuperarConsciencia();
     }
 
+    public ResultadoTesteContraMorte realizarTesteContraMorte(int dadoNatural, RegraDeMorte regra) {
+        return regra.realizarTesteContraMorte(this, dadoNatural);
+    }
+
     void ficarInconsciente() {
         condicao = Condicao.INCONSCIENTE;
     }
@@ -102,6 +106,21 @@ public class EstadoDeCombate {
     void morrer() {
         pvAtual = 0;
         condicao = Condicao.MORTO;
+    }
+
+    void estabilizar() {
+        condicao = Condicao.ESTAVEL;
+        sucessos = 0;
+        falhas = 0;
+    }
+
+    void despertarCom(int pv) {
+        pvAtual = pv;
+        recuperarConsciencia();
+    }
+
+    void registrarSucesso() {
+        sucessos++;
     }
 
     void registrarFalhas(int quantidade) {

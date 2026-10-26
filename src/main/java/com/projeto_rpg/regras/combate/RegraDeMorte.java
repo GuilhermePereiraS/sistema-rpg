@@ -17,4 +17,12 @@ public interface RegraDeMorte {
      * Chamado quando um personagem que já está com 0 PV sofre dano.
      */
     void aoSofrerDanoSemPv(EstadoDeCombate estado, int dano, boolean critico);
+
+    /**
+     * Aplica um teste contra a morte com o valor natural rolado.
+     *
+     * @throws com.projeto_rpg.regras.excecao.TesteContraMorteNaoPermitidoException
+     *         se a situação ou o sistema não permitirem o teste
+     */
+    ResultadoTesteContraMorte realizarTesteContraMorte(EstadoDeCombate estado, int dadoNatural);
 }
