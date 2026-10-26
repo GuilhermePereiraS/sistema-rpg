@@ -68,4 +68,21 @@ class ParserDeExpressaoTest {
         assertEquals(List.of(TermoDeDado.simples(1, 20)), expressao.termos());
         assertEquals(5, expressao.modificador());
     }
+
+    @Test
+    @DisplayName("deve interpretar 'kh' como manter os maiores dados")
+    void deveManterMaioresQuandoExpressaoTiverKh() {
+        ExpressaoDeDado expressao = parser.interpretar("4d6kh3");
+
+        assertEquals(List.of(TermoDeDado.mantendoMaiores(4, 6, 3)), expressao.termos());
+    }
+
+    @Test
+    @DisplayName("deve interpretar 'kl' como manter os menores dados")
+    void deveManterMenoresQuandoExpressaoTiverKl() {
+        ExpressaoDeDado expressao = parser.interpretar("2d20kl1+4");
+
+        assertEquals(List.of(TermoDeDado.mantendoMenores(2, 20, 1)), expressao.termos());
+        assertEquals(4, expressao.modificador());
+    }
 }
