@@ -14,6 +14,8 @@ import java.util.Objects;
  */
 public class ResolvedorDeAtaque {
 
+    private static final int DANO_MINIMO = 0;
+
     private final RoladorDeTeste roladorDeTeste;
     private final RoladorDeDados roladorDeDados;
     private final PerfilDeRegras perfil;
@@ -30,11 +32,15 @@ public class ResolvedorDeAtaque {
         if (!acertou(teste)) {
             return new ResultadoAtaque(teste, false, false, List.of(), 0);
         }
-        ResultadoRolagem rolagemDeDano = teste.critico()
+        ResultadoRolagem rolagemDeDano = rolarDano(dano, teste.critico());
+        return new ResultadoAtaque(teste, true, teste.critico(), rolagemDeDano.dados(),
+                Math.max(DANO_MINIMO, rolagemDeDano.total()));
+    }
+
+    private ResultadoRolagem rolarDano(ExpressaoDeDado dano, boolean critico) {
+        return critico
                 ? perfil.regraDeDanoCritico().rolarDanoCritico(dano, roladorDeDados)
                 : roladorDeDados.rolar(dano);
-        return new ResultadoAtaque(teste, true, teste.critico(), rolagemDeDano.dados(),
-                Math.max(0, rolagemDeDano.total()));
     }
 
     private static boolean acertou(ResultadoTeste teste) {
