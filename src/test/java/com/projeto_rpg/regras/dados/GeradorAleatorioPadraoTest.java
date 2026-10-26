@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SplittableRandom;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,7 +41,7 @@ class GeradorAleatorioPadraoTest {
         int[] sequenciaA = IntStream.range(0, 20).map(i -> primeiro.rolar(20)).toArray();
         int[] sequenciaB = IntStream.range(0, 20).map(i -> segundo.rolar(20)).toArray();
 
-        assertEquals(java.util.Arrays.toString(sequenciaA), java.util.Arrays.toString(sequenciaB));
+        assertArrayEquals(sequenciaA, sequenciaB);
     }
 
     @ParameterizedTest
