@@ -1,12 +1,18 @@
 package com.projeto_rpg.regras.dados;
 
+import com.projeto_rpg.regras.excecao.ExpressaoInvalidaException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ParserDeExpressaoTest {
 
@@ -84,5 +90,34 @@ class ParserDeExpressaoTest {
 
         assertEquals(List.of(TermoDeDado.mantendoMenores(2, 20, 1)), expressao.termos());
         assertEquals(4, expressao.modificador());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"   "})
+    @DisplayName("deve lançar exceção quando a expressão for nula ou vazia")
+    void deveLancarExcecaoQuandoExpressaoForNulaOuVazia(String texto) {
+        assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"abc", "2d", "d", "2d6+", "2d6++3", "+", "2d6x", "2d6kh", "5", "-3"})
+    @DisplayName("deve lançar exceção quando a expressão estiver malformada ou não tiver dados")
+    void deveLancarExcecaoQuandoExpressaoForMalformada(String texto) {
+        assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"0d6", "101d6", "1d1", "1d1001", "2d20kh0", "2d20kl3"})
+    @DisplayName("deve lançar exceção quando quantidade, faces ou dados mantidos estiverem fora dos limites")
+    void deveLancarExcecaoQuandoLimitesForemViolados(String texto) {
+        assertThrows(ExpressaoInvalidaException.class, () -> parser.interpretar(texto));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"100d6", "1d2", "1d1000", "2d20kh2"})
+    @DisplayName("deve aceitar valores exatamente nos limites")
+    void deveAceitarExpressaoQuandoValoresEstiveremNosLimites(String texto) {
+        assertDoesNotThrow(() -> parser.interpretar(texto));
     }
 }
