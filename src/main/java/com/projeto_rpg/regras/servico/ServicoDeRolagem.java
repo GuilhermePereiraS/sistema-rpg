@@ -43,7 +43,7 @@ public class ServicoDeRolagem {
     public ResultadoTeste testar(Long personagemId, int modificador, int alvo, ModoDeRolagem modo) {
         exigirPersonagem(personagemId);
         ResultadoTeste resultado = roladorDeTeste.testar(modificador, alvo, modo);
-        String descricao = "d%d%+d contra %d (%s)".formatted(perfil.facesDoDadoDeTeste(), modificador, alvo, modo);
+        String descricao = DescricaoDeRolagem.teste(perfil.facesDoDadoDeTeste(), modificador, alvo, modo);
         historico.registrar(personagemId, TipoRolagem.TESTE, descricao, resultado.dados(), resultado.total());
         return resultado;
     }

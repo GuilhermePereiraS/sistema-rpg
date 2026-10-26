@@ -66,16 +66,24 @@ public class ServicoDeCombate {
         EstadoDeCombate alvo = buscar(alvoId);
         ExpressaoDeDado dano = parser.interpretar(expressaoDeDano);
         ResultadoAtaque resultado = resolvedorDeAtaque.atacar(bonusDeAtaque, defesaDoAlvo, dano, modo);
-        historico.registrar(atacanteId, TipoRolagem.ATAQUE,
-                "d%d%+d contra %d (%s)".formatted(perfil.facesDoDadoDeTeste(), bonusDeAtaque, defesaDoAlvo, modo),
-                resultado.teste().dados(), resultado.teste().total());
+        registrarAtaque(atacanteId, bonusDeAtaque, defesaDoAlvo, modo, resultado);
         if (resultado.acertou()) {
-            String descricaoDoDano = expressaoDeDano.trim() + (resultado.critico() ? " (crítico)" : "");
-            historico.registrar(atacanteId, TipoRolagem.DANO, descricaoDoDano, resultado.dadosDeDano(),
-                    resultado.dano());
+            registrarDano(atacanteId, expressaoDeDano, resultado);
             alvo.sofrerDano(resultado.dano(), resultado.critico(), perfil.regraDeMorte());
         }
         return resultado;
+    }
+
+    private void registrarAtaque(Long atacanteId, int bonusDeAtaque, int defesaDoAlvo, ModoDeRolagem modo,
+                                 ResultadoAtaque resultado) {
+        String descricao = DescricaoDeRolagem.teste(perfil.facesDoDadoDeTeste(), bonusDeAtaque, defesaDoAlvo, modo);
+        historico.registrar(atacanteId, TipoRolagem.ATAQUE, descricao, resultado.teste().dados(),
+                resultado.teste().total());
+    }
+
+    private void registrarDano(Long atacanteId, String expressaoDeDano, ResultadoAtaque resultado) {
+        historico.registrar(atacanteId, TipoRolagem.DANO, DescricaoDeRolagem.dano(expressaoDeDano, resultado.critico()),
+                resultado.dadosDeDano(), resultado.dano());
     }
 
     public EstadoDeCombate aplicarDano(Long personagemId, int dano, boolean critico) {
@@ -111,7 +119,7 @@ public class ServicoDeCombate {
         int faces = perfil.facesDoDadoDeTeste();
         int dado = gerador.rolar(faces);
         ResultadoTesteContraMorte resultado = estado.realizarTesteContraMorte(dado, perfil.regraDeMorte());
-        historico.registrar(personagemId, TipoRolagem.TESTE_CONTRA_MORTE, "d%d teste contra a morte".formatted(faces),
+        historico.registrar(personagemId, TipoRolagem.TESTE_CONTRA_MORTE, DescricaoDeRolagem.testeContraMorte(faces),
                 List.of(dado), dado);
         return resultado;
     }
