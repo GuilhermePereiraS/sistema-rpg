@@ -16,7 +16,6 @@ import java.time.Clock;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConfiguracaoDeRegrasTest {
 
@@ -40,7 +39,7 @@ class ConfiguracaoDeRegrasTest {
     @DisplayName("deve falhar ao iniciar quando o perfil configurado não existir")
     void deveFalharAoIniciarQuandoPerfilNaoExistir() {
         contexto.withPropertyValues("rpg.regras.perfil=inexistente")
-                .run(ctx -> assertTrue(ctx.getStartupFailure() != null));
+                .run(ctx -> assertNotNull(ctx.getStartupFailure()));
     }
 
     @Test
