@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class AtributosTest {
 
@@ -41,5 +42,39 @@ class AtributosTest {
                 () -> assertEquals(1, atributos.modificador(Atributo.INTELIGENCIA)),
                 () -> assertEquals(0, atributos.modificador(Atributo.SABEDORIA)),
                 () -> assertEquals(-1, atributos.modificador(Atributo.CARISMA)));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando algum atributo for menor que 1")
+    void deveLancarExcecaoQuandoAtributoForMenorQueMinimo() {
+        assertThrows(IllegalArgumentException.class, () -> new Atributos(0, 10, 10, 10, 10, 10));
+        assertThrows(IllegalArgumentException.class, () -> new Atributos(10, 10, 10, 10, 10, -3));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando algum atributo for maior que 30")
+    void deveLancarExcecaoQuandoAtributoForMaiorQueMaximo() {
+        assertThrows(IllegalArgumentException.class, () -> new Atributos(10, 31, 10, 10, 10, 10));
+    }
+
+    @Test
+    @DisplayName("deve aceitar os limites 1 e 30")
+    void deveAceitarAtributosQuandoEstiveremNosLimites() {
+        Atributos atributos = new Atributos(1, 30, 1, 30, 1, 30);
+
+        assertAll(
+                () -> assertEquals(1, atributos.valor(Atributo.FORCA)),
+                () -> assertEquals(30, atributos.valor(Atributo.DESTREZA)));
+    }
+
+    @Test
+    @DisplayName("deve considerar iguais conjuntos com os mesmos valores")
+    void deveSerIgualQuandoValoresForemIguais() {
+        Atributos a = new Atributos(15, 14, 13, 12, 10, 8);
+        Atributos b = new Atributos(15, 14, 13, 12, 10, 8);
+
+        assertAll(
+                () -> assertEquals(a, b),
+                () -> assertEquals(a.hashCode(), b.hashCode()));
     }
 }
