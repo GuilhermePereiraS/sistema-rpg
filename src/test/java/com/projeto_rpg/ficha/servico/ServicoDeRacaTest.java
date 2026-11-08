@@ -1,7 +1,13 @@
 package com.projeto_rpg.ficha.servico;
 
 import com.projeto_rpg.ficha.excecao.NomeJaCadastradoException;
+import com.projeto_rpg.ficha.excecao.RacaEmUsoException;
 import com.projeto_rpg.ficha.excecao.RacaNaoEncontradaException;
+import com.projeto_rpg.ficha.modelo.Atributos;
+import com.projeto_rpg.ficha.modelo.Classe;
+import com.projeto_rpg.ficha.modelo.ClasseRepository;
+import com.projeto_rpg.ficha.modelo.Personagem;
+import com.projeto_rpg.ficha.modelo.PersonagemRepository;
 import com.projeto_rpg.ficha.modelo.Raca;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +28,12 @@ class ServicoDeRacaTest {
 
     @Autowired
     private ServicoDeRaca servico;
+
+    @Autowired
+    private PersonagemRepository personagens;
+
+    @Autowired
+    private ClasseRepository classes;
 
     @Test
     @DisplayName("deve criar e persistir raça com id gerado")
@@ -118,5 +130,17 @@ class ServicoDeRacaTest {
     @DisplayName("deve lançar exceção ao remover raça inexistente")
     void deveLancarExcecaoQuandoRemoverRacaInexistente() {
         assertThrows(RacaNaoEncontradaException.class, () -> servico.remover(999L));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção ao remover raça usada por algum personagem")
+    void deveLancarExcecaoQuandoRemoverRacaEmUso() {
+        Raca humano = servico.criar("Humano", 30);
+        Classe guerreiro = classes.save(new Classe("Guerreiro", 10));
+        personagens.save(new Personagem("Aragorn", guerreiro, humano.getId(), new Atributos(10, 10, 10, 10, 10, 10)));
+
+        assertAll(
+                () -> assertThrows(RacaEmUsoException.class, () -> servico.remover(humano.getId())),
+                () -> assertEquals("Humano", servico.buscar(humano.getId()).getNome()));
     }
 }

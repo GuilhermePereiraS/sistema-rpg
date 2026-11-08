@@ -1,8 +1,12 @@
 package com.projeto_rpg.ficha.servico;
 
+import com.projeto_rpg.ficha.excecao.ClasseEmUsoException;
 import com.projeto_rpg.ficha.excecao.ClasseNaoEncontradaException;
 import com.projeto_rpg.ficha.excecao.NomeJaCadastradoException;
+import com.projeto_rpg.ficha.modelo.Atributos;
 import com.projeto_rpg.ficha.modelo.Classe;
+import com.projeto_rpg.ficha.modelo.Personagem;
+import com.projeto_rpg.ficha.modelo.PersonagemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,9 @@ class ServicoDeClasseTest {
 
     @Autowired
     private ServicoDeClasse servico;
+
+    @Autowired
+    private PersonagemRepository personagens;
 
     @Test
     @DisplayName("deve criar e persistir classe com id gerado")
@@ -119,5 +126,16 @@ class ServicoDeClasseTest {
     @DisplayName("deve lançar exceção ao remover classe inexistente")
     void deveLancarExcecaoQuandoRemoverClasseInexistente() {
         assertThrows(ClasseNaoEncontradaException.class, () -> servico.remover(999L));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção ao remover classe usada por algum personagem")
+    void deveLancarExcecaoQuandoRemoverClasseEmUso() {
+        Classe guerreiro = servico.criar("Guerreiro", 10);
+        personagens.save(new Personagem("Aragorn", guerreiro, 1L, new Atributos(10, 10, 10, 10, 10, 10)));
+
+        assertAll(
+                () -> assertThrows(ClasseEmUsoException.class, () -> servico.remover(guerreiro.getId())),
+                () -> assertEquals("Guerreiro", servico.buscar(guerreiro.getId()).getNome()));
     }
 }
