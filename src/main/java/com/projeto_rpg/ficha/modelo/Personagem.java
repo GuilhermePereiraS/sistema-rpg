@@ -84,6 +84,18 @@ public class Personagem {
         return TabelaDeNivel.nivelPara(xp);
     }
 
+    /**
+     * PV máximo: no nível 1, o dado de vida cheio; nos demais, a média fixa do dado (dado / 2 + 1).
+     * Em todo nível se soma o modificador de Constituição, com ganho mínimo de 1 PV por nível.
+     */
+    public int getPvMaximo() {
+        int dado = classe.getDadoDeVida();
+        int constituicao = modificador(Atributo.CONSTITUICAO);
+        int pvNivelUm = Math.max(1, dado + constituicao);
+        int pvPorNivel = Math.max(1, dado / 2 + 1 + constituicao);
+        return pvNivelUm + (getNivel() - 1) * pvPorNivel;
+    }
+
     public int getBonusDeProficiencia() {
         return TabelaDeNivel.bonusDeProficiencia(getNivel());
     }
