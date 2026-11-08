@@ -53,7 +53,7 @@ class CompraDePontosTest {
         assertAll(
                 () -> assertEquals(27, CompraDePontos.pontosRestantes(new Atributos(8, 8, 8, 8, 8, 8))),
                 () -> assertEquals(0, CompraDePontos.pontosRestantes(new Atributos(15, 14, 13, 12, 10, 8))),
-                () -> assertEquals(12, CompraDePontos.pontosRestantes(new Atributos(10, 10, 10, 10, 10, 10))));
+                () -> assertEquals(15, CompraDePontos.pontosRestantes(new Atributos(10, 10, 10, 10, 10, 10))));
     }
 
     @Test
