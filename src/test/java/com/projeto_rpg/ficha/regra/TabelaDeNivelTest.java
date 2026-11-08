@@ -56,4 +56,33 @@ class TabelaDeNivelTest {
         assertThrows(IllegalArgumentException.class, () -> TabelaDeNivel.xpMinimoDoNivel(0));
         assertThrows(IllegalArgumentException.class, () -> TabelaDeNivel.xpMinimoDoNivel(21));
     }
+
+    @Test
+    @DisplayName("deve dar bônus de proficiência +2 nos níveis 1 a 4")
+    void deveRetornarBonusDoisQuandoNivelForAteQuatro() {
+        assertAll(
+                () -> assertEquals(2, TabelaDeNivel.bonusDeProficiencia(1)),
+                () -> assertEquals(2, TabelaDeNivel.bonusDeProficiencia(4)));
+    }
+
+    @Test
+    @DisplayName("deve aumentar o bônus de proficiência a cada 4 níveis")
+    void deveAumentarBonusQuandoNivelCruzarFaixa() {
+        assertAll(
+                () -> assertEquals(3, TabelaDeNivel.bonusDeProficiencia(5)),
+                () -> assertEquals(3, TabelaDeNivel.bonusDeProficiencia(8)),
+                () -> assertEquals(4, TabelaDeNivel.bonusDeProficiencia(9)),
+                () -> assertEquals(4, TabelaDeNivel.bonusDeProficiencia(12)),
+                () -> assertEquals(5, TabelaDeNivel.bonusDeProficiencia(13)),
+                () -> assertEquals(5, TabelaDeNivel.bonusDeProficiencia(16)),
+                () -> assertEquals(6, TabelaDeNivel.bonusDeProficiencia(17)),
+                () -> assertEquals(6, TabelaDeNivel.bonusDeProficiencia(20)));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção ao calcular bônus de proficiência de nível inválido")
+    void deveLancarExcecaoQuandoNivelDoBonusForInvalido() {
+        assertThrows(IllegalArgumentException.class, () -> TabelaDeNivel.bonusDeProficiencia(0));
+        assertThrows(IllegalArgumentException.class, () -> TabelaDeNivel.bonusDeProficiencia(21));
+    }
 }
