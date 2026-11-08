@@ -62,4 +62,65 @@ class PersonagemTest {
                 () -> assertEquals(2, personagem.modificador(Atributo.DESTREZA)),
                 () -> assertEquals(-1, personagem.modificador(Atributo.CARISMA)));
     }
+
+    @Test
+    @DisplayName("deve acumular XP a cada ganho")
+    void deveAcumularXpQuandoGanharXpVariasVezes() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(100);
+        personagem.ganharXp(150);
+
+        assertEquals(250, personagem.getXp());
+    }
+
+    @Test
+    @DisplayName("deve subir de nível quando o XP atingir o mínimo do próximo nível")
+    void deveSubirDeNivelQuandoXpAtingirOMinimo() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(299);
+        assertEquals(1, personagem.getNivel());
+
+        personagem.ganharXp(1);
+        assertEquals(2, personagem.getNivel());
+    }
+
+    @Test
+    @DisplayName("deve poder subir vários níveis de uma vez")
+    void deveSubirVariosNiveisQuandoGanharMuitoXp() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(6500);
+
+        assertEquals(5, personagem.getNivel());
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando o XP ganho não for positivo")
+    void deveLancarExcecaoQuandoXpGanhoNaoForPositivo() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        assertThrows(IllegalArgumentException.class, () -> personagem.ganharXp(0));
+        assertThrows(IllegalArgumentException.class, () -> personagem.ganharXp(-10));
+        assertEquals(0, personagem.getXp());
+    }
+
+    @Test
+    @DisplayName("deve ter bônus de proficiência +2 no nível 1")
+    void deveTerBonusDeProficienciaDoisQuandoForNivelUm() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        assertEquals(2, personagem.getBonusDeProficiencia());
+    }
+
+    @Test
+    @DisplayName("deve aumentar o bônus de proficiência ao subir de nível")
+    void deveAumentarBonusDeProficienciaQuandoSubirDeFaixa() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(6500);
+
+        assertEquals(3, personagem.getBonusDeProficiencia());
+    }
 }
