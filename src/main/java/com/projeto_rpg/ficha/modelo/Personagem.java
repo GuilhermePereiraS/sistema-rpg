@@ -78,7 +78,7 @@ public class Personagem {
         if (xpGanho <= 0) {
             throw new IllegalArgumentException("XP ganho deve ser positivo");
         }
-        this.xp += xpGanho;
+        this.xp = (int) Math.min((long) xp + xpGanho, Integer.MAX_VALUE);
     }
 
     public int getNivel() {
