@@ -1,7 +1,9 @@
 package com.projeto_rpg.ficha.servico;
 
 import com.projeto_rpg.ficha.excecao.NomeJaCadastradoException;
+import com.projeto_rpg.ficha.excecao.RacaEmUsoException;
 import com.projeto_rpg.ficha.excecao.RacaNaoEncontradaException;
+import com.projeto_rpg.ficha.modelo.PersonagemRepository;
 import com.projeto_rpg.ficha.modelo.Raca;
 import com.projeto_rpg.ficha.modelo.RacaRepository;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,11 @@ import java.util.List;
 public class ServicoDeRaca {
 
     private final RacaRepository repository;
+    private final PersonagemRepository personagens;
 
-    public ServicoDeRaca(RacaRepository repository) {
+    public ServicoDeRaca(RacaRepository repository, PersonagemRepository personagens) {
         this.repository = repository;
+        this.personagens = personagens;
     }
 
     public Raca criar(String nome, int deslocamento) {
@@ -51,6 +55,10 @@ public class ServicoDeRaca {
     }
 
     public void remover(Long id) {
-        repository.delete(buscar(id));
+        Raca raca = buscar(id);
+        if (personagens.existsByRacaId(id)) {
+            throw new RacaEmUsoException(id);
+        }
+        repository.delete(raca);
     }
 }

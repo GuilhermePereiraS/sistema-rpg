@@ -1,9 +1,11 @@
 package com.projeto_rpg.ficha.servico;
 
+import com.projeto_rpg.ficha.excecao.ClasseEmUsoException;
 import com.projeto_rpg.ficha.excecao.ClasseNaoEncontradaException;
 import com.projeto_rpg.ficha.excecao.NomeJaCadastradoException;
 import com.projeto_rpg.ficha.modelo.Classe;
 import com.projeto_rpg.ficha.modelo.ClasseRepository;
+import com.projeto_rpg.ficha.modelo.PersonagemRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +19,11 @@ import java.util.List;
 public class ServicoDeClasse {
 
     private final ClasseRepository repository;
+    private final PersonagemRepository personagens;
 
-    public ServicoDeClasse(ClasseRepository repository) {
+    public ServicoDeClasse(ClasseRepository repository, PersonagemRepository personagens) {
         this.repository = repository;
+        this.personagens = personagens;
     }
 
     public Classe criar(String nome, int dadoDeVida) {
@@ -52,6 +56,10 @@ public class ServicoDeClasse {
     }
 
     public void remover(Long id) {
-        repository.delete(buscar(id));
+        Classe classe = buscar(id);
+        if (personagens.existsByClasseId(id)) {
+            throw new ClasseEmUsoException(id);
+        }
+        repository.delete(classe);
     }
 }
