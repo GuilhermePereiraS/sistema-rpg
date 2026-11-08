@@ -123,4 +123,45 @@ class PersonagemTest {
 
         assertEquals(3, personagem.getBonusDeProficiencia());
     }
+
+    @Test
+    @DisplayName("deve ter no nível 1 o dado de vida máximo mais o modificador de Constituição")
+    void deveCalcularPvMaximoDoNivelUmQuandoPersonagemForCriado() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        assertEquals(11, personagem.getPvMaximo());
+    }
+
+    @Test
+    @DisplayName("deve somar a média do dado de vida mais Constituição a cada nível acima do 1")
+    void deveSomarMediaDoDadoQuandoSubirDeNivel() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(300);
+        assertEquals(18, personagem.getPvMaximo());
+
+        personagem.ganharXp(6200);
+        assertEquals(39, personagem.getPvMaximo());
+    }
+
+    @Test
+    @DisplayName("deve ganhar no mínimo 1 PV por nível mesmo com Constituição muito baixa")
+    void deveGarantirUmPvPorNivelQuandoConstituicaoForMuitoBaixa() {
+        Classe mago = new Classe("Mago", 6);
+        Personagem personagem = new Personagem("Frágil", mago, 7L, new Atributos(10, 10, 1, 10, 10, 10));
+
+        assertEquals(1, personagem.getPvMaximo());
+
+        personagem.ganharXp(300);
+        assertEquals(2, personagem.getPvMaximo());
+    }
+
+    @Test
+    @DisplayName("deve usar o dado de vida da classe no cálculo de PV")
+    void deveUsarDadoDeVidaDaClasseQuandoCalcularPv() {
+        Classe mago = new Classe("Mago", 6);
+        Personagem personagem = new Personagem("Gandalf", mago, 7L, atributos);
+
+        assertEquals(7, personagem.getPvMaximo());
+    }
 }
