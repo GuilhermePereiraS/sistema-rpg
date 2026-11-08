@@ -42,6 +42,16 @@ public final class TabelaDeNivel {
         return XP_MINIMO[nivel - 1];
     }
 
+    /**
+     * Bônus de proficiência do nível: +2 nos níveis 1 a 4, subindo 1 a cada 4 níveis.
+     *
+     * @throws IllegalArgumentException se o nível estiver fora de 1 a 20
+     */
+    public static int bonusDeProficiencia(int nivel) {
+        validarNivel(nivel);
+        return 2 + (nivel - 1) / 4;
+    }
+
     private static void validarNivel(int nivel) {
         if (nivel < NIVEL_MINIMO || nivel > NIVEL_MAXIMO) {
             throw new IllegalArgumentException("Nível deve estar entre " + NIVEL_MINIMO + " e "
