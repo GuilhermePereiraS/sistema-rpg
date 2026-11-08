@@ -164,4 +164,17 @@ class PersonagemTest {
 
         assertEquals(7, personagem.getPvMaximo());
     }
+
+    @Test
+    @DisplayName("deve permanecer no nível 20 e sem estouro quando o XP passar do limite do inteiro")
+    void deveManterNivelVinteQuandoXpExceder() {
+        Personagem personagem = new Personagem("Aragorn", guerreiro, 7L, atributos);
+
+        personagem.ganharXp(Integer.MAX_VALUE);
+        personagem.ganharXp(10);
+
+        assertAll(
+                () -> assertEquals(Integer.MAX_VALUE, personagem.getXp()),
+                () -> assertEquals(20, personagem.getNivel()));
+    }
 }
