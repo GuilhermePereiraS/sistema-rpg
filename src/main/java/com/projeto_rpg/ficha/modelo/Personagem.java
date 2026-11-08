@@ -1,5 +1,6 @@
 package com.projeto_rpg.ficha.modelo;
 
+import com.projeto_rpg.ficha.regra.TabelaDeNivel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -67,8 +68,24 @@ public class Personagem {
         return atributos.modificador(atributo);
     }
 
+    /**
+     * Soma XP ao personagem; o nível acompanha o XP acumulado.
+     *
+     * @throws IllegalArgumentException se o XP não for positivo
+     */
+    public void ganharXp(int xpGanho) {
+        if (xpGanho <= 0) {
+            throw new IllegalArgumentException("XP ganho deve ser positivo");
+        }
+        this.xp += xpGanho;
+    }
+
     public int getNivel() {
-        return 1;
+        return TabelaDeNivel.nivelPara(xp);
+    }
+
+    public int getBonusDeProficiencia() {
+        return TabelaDeNivel.bonusDeProficiencia(getNivel());
     }
 
     public Long getId() {
