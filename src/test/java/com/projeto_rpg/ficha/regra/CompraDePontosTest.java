@@ -37,4 +37,61 @@ class CompraDePontosTest {
         assertThrows(CompraDePontosInvalidaException.class, () -> CompraDePontos.custo(7));
         assertThrows(CompraDePontosInvalidaException.class, () -> CompraDePontos.custo(16));
     }
+
+    @Test
+    @DisplayName("deve somar o custo dos seis atributos")
+    void deveSomarCustoQuandoCalcularTotal() {
+        assertAll(
+                () -> assertEquals(0, CompraDePontos.custoTotal(new Atributos(8, 8, 8, 8, 8, 8))),
+                () -> assertEquals(27, CompraDePontos.custoTotal(new Atributos(15, 14, 13, 12, 10, 8))),
+                () -> assertEquals(27, CompraDePontos.custoTotal(new Atributos(15, 15, 15, 8, 8, 8))));
+    }
+
+    @Test
+    @DisplayName("deve informar os pontos restantes dos 27 disponíveis")
+    void deveInformarPontosRestantesQuandoConsultar() {
+        assertAll(
+                () -> assertEquals(27, CompraDePontos.pontosRestantes(new Atributos(8, 8, 8, 8, 8, 8))),
+                () -> assertEquals(0, CompraDePontos.pontosRestantes(new Atributos(15, 14, 13, 12, 10, 8))),
+                () -> assertEquals(12, CompraDePontos.pontosRestantes(new Atributos(10, 10, 10, 10, 10, 10))));
+    }
+
+    @Test
+    @DisplayName("deve aceitar distribuição que gasta exatamente 27 pontos")
+    void deveAceitarDistribuicaoQuandoGastarTodosOsPontos() {
+        CompraDePontos.validar(new Atributos(15, 14, 13, 12, 10, 8));
+    }
+
+    @Test
+    @DisplayName("deve aceitar distribuição que gasta menos de 27 pontos")
+    void deveAceitarDistribuicaoQuandoSobrarPontos() {
+        CompraDePontos.validar(new Atributos(10, 10, 10, 10, 10, 10));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando a distribuição gastar mais de 27 pontos")
+    void deveLancarExcecaoQuandoGastarMaisQueOsPontosDisponiveis() {
+        assertThrows(CompraDePontosInvalidaException.class,
+                () -> CompraDePontos.validar(new Atributos(15, 15, 15, 15, 8, 8)));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando algum atributo ficar abaixo de 8")
+    void deveLancarExcecaoQuandoAtributoFicarAbaixoDoMinimoDeCompra() {
+        assertThrows(CompraDePontosInvalidaException.class,
+                () -> CompraDePontos.validar(new Atributos(7, 15, 15, 8, 8, 8)));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando algum atributo passar de 15")
+    void deveLancarExcecaoQuandoAtributoPassarDoMaximoDeCompra() {
+        assertThrows(CompraDePontosInvalidaException.class,
+                () -> CompraDePontos.validar(new Atributos(16, 8, 8, 8, 8, 8)));
+    }
+
+    @Test
+    @DisplayName("deve lançar exceção quando os atributos forem nulos")
+    void deveLancarExcecaoQuandoAtributosForemNulos() {
+        assertThrows(CompraDePontosInvalidaException.class, () -> CompraDePontos.validar(null));
+    }
 }
